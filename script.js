@@ -15,8 +15,6 @@ const createScene = function () {
 };
 
 const scene = createScene();
-var player = BABYLON.MeshBuilder.CreateSphere("sphere", {})
-player.position.y = 0.5;
 
 for (var i=0;i<15;i++){
     var box = BABYLON.MeshBuilder.CreateBox("box", {})
@@ -24,7 +22,18 @@ for (var i=0;i<15;i++){
     box.position.x = Math.floor(Math.random()*10)-5;
     box.position.z = Math.floor(Math.random()*10)-5; 
 }
+var player;
+BABYLON.SceneLoader.ImportMesh(null, "meshes/", "car.babylon", scene, function (newMeshes) {
+    // Set the target of the camera to the first imported mesh
+    player = newMeshes[0];
+    player.scaling.x=.5;
+    player.scaling.y=.5;
+    player.scaling.z=.5;
+    player.position.y=1;
+});
 
+const camera = new BABYLON.FollowCamera("camera", new BABYLON.Vector3(5, 5, 0), scene, player);
+camera.lockedTarget = player;
 engine.runRenderLoop(function (){
     scene.render();
 });
@@ -41,10 +50,10 @@ function handleKeyDown(event){
         player.position.z++;
     }
     if (event.key=='a'){
-        player.position.x--;
+        player.rotation.y--;
     }
     if (event.key=='d'){
-        player.position.x++;
+        player.rotation.y++;
     }
 }
 
