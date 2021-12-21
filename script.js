@@ -8,7 +8,7 @@ const createScene = function () {
     
     const scene = new BABYLON.Scene(engine);
 
-    var gravityVector = new BABYLON.Vector3(0,-9.81, 0);
+    var gravityVector = new BABYLON.Vector3(0,-20, 0);
     var physicsPlugin = new BABYLON.CannonJSPlugin();
     scene.enablePhysics(gravityVector, physicsPlugin);
 
@@ -22,7 +22,7 @@ const createScene = function () {
     grassMat.diffuseTexture.vScale = 50.0;
     grassMat.bumpTexture.uScale = 50.0;
     grassMat.bumpTexture.vScale = 50.0;
-    var ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "HeightMap.png", 1000, 1000, 500, 0, 10, scene, false, function () {
+    var ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "HeightMap.png", 1000, 1000, 500, 0, 1, scene, false, function () {
 		ground.imposter = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.HeightmapImpostor, { mass: 0 });
         ground.material = grassMat;    
     });
@@ -76,7 +76,7 @@ const scene = createScene();
 for (var i=0;i<100;i++){
     BABYLON.SceneLoader.ImportMesh("", "./", "tree.babylon", scene, function (meshes) {
     var box = meshes[0]
-    box.position.y = 5;
+    box.position.y = 2;
     box.position.x = Math.random()*100-50;
     box.position.z = Math.random()*100-50;
     new BABYLON.PhysicsImpostor(box, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.9 }, scene);
@@ -89,7 +89,7 @@ BABYLON.SceneLoader.ImportMesh("", "./", "kicker.babylon", scene, function (mesh
     kicker.scaling.x = 5;
     kicker.scaling.y = 5;
     kicker.scaling.z = 5;
-    kicker.position.y = 7;
+    kicker.position.y = 5;
     kicker.position.x = -10;
     kicker.position.z = -10;
     new BABYLON.PhysicsImpostor(kicker, BABYLON.PhysicsImpostor.MeshImpostor, { mass: 0, restitution: 0 }, scene);
@@ -100,7 +100,7 @@ BABYLON.SceneLoader.ImportMesh("", "./", "kicker.babylon", scene, function (mesh
         kicker.scaling.x = 5;
         kicker.scaling.y = 5;
         kicker.scaling.z = 5;
-        kicker.position.y = 7;
+        kicker.position.y = 4;
         kicker.position.x = 100;
         kicker.position.z = 100;
         new BABYLON.PhysicsImpostor(kicker, BABYLON.PhysicsImpostor.MeshImpostor, { mass: 0, restitution: 0 }, scene);
@@ -118,17 +118,25 @@ window.addEventListener("resize",function(){
 
 function handleKeyDown(event){
     if (event.key=='w'){
-        player.imposter.applyImpulse(new BABYLON.Vector3(0,0,5),player.getAbsolutePosition());
+        player.imposter.setLinearVelocity(new BABYLON.Vector3(0,0,20));
     }
     if (event.key=='s'){
-        player.imposter.applyImpulse(new BABYLON.Vector3(0,0,-5),player.getAbsolutePosition());
+        player.imposter.setLinearVelocity(new BABYLON.Vector3(0,0,-20));
     }
     if (event.key=='a'){
-        player.imposter.applyImpulse(new BABYLON.Vector3(-5,0,0),player.getAbsolutePosition());
+        player.imposter.setLinearVelocity(new BABYLON.Vector3(-20,0,0));
     }
     if (event.key=='d'){
-        player.imposter.applyImpulse(new BABYLON.Vector3(5,0,0),player.getAbsolutePosition());
+        player.imposter.setLinearVelocity(new BABYLON.Vector3(20,0,0));
     }
 }
+function handleMouse(event){
+var xPercent = (event.clientX/document.body.clientWidth*200)-100;
+var zPercent = (event.clientY/document.body.clientHeight*200)-100;
+console.log("click is x: "+xPercent +"% and y: "+zPercent+"%.");
+player.imposter.setLinearVelocity(new BABYLON.Vector3(xPercent/10,0,-zPercent/10));
+}
 
+document.addEventListener('click' , handleMouse);
+document.addEventListener('mousemove' , handleMouse);
 document.addEventListener('keydown',handleKeyDown);
