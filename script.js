@@ -73,28 +73,38 @@ const scene = createScene();
 
 
 
-for (var i=0;i<10;i++){
-    var box = BABYLON.MeshBuilder.CreateBox("box", {});
-    box.position.y = Math.floor(Math.random()*5);
-    box.position.x = Math.floor(Math.random()*100)-50;
-    box.position.z = Math.floor(Math.random()*100)-50;
-    new BABYLON.PhysicsImpostor(box, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 1, restitution: 0.9 }, scene);
-
-    //shadowGenerator.addShadowCaster(box);
-
-    var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
-
-    myMaterial.diffuseColor = new BABYLON.Color3(1, 0, 1);
-    myMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
-    myMaterial.ambientColor = new BABYLON.Color3(1,0,0);
-
-    box.material = myMaterial;
+for (var i=0;i<100;i++){
+    BABYLON.SceneLoader.ImportMesh("", "./", "tree.babylon", scene, function (meshes) {
+    var box = meshes[0]
+    box.position.y = 5;
+    box.position.x = Math.random()*100-50;
+    box.position.z = Math.random()*100-50;
+    new BABYLON.PhysicsImpostor(box, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.9 }, scene);
+    });
 
 }
 
+BABYLON.SceneLoader.ImportMesh("", "./", "kicker.babylon", scene, function (meshes) {
+    var kicker = meshes[0]
+    kicker.scaling.x = 5;
+    kicker.scaling.y = 5;
+    kicker.scaling.z = 5;
+    kicker.position.y = 7;
+    kicker.position.x = -10;
+    kicker.position.z = -10;
+    new BABYLON.PhysicsImpostor(kicker, BABYLON.PhysicsImpostor.MeshImpostor, { mass: 0, restitution: 0 }, scene);
+    });
 
-
-
+    BABYLON.SceneLoader.ImportMesh("", "./", "portal.babylon", scene, function (meshes) {
+        var kicker = meshes[0]
+        kicker.scaling.x = 5;
+        kicker.scaling.y = 5;
+        kicker.scaling.z = 5;
+        kicker.position.y = 7;
+        kicker.position.x = 100;
+        kicker.position.z = 100;
+        new BABYLON.PhysicsImpostor(kicker, BABYLON.PhysicsImpostor.MeshImpostor, { mass: 0, restitution: 0 }, scene);
+        });
 
 
 
