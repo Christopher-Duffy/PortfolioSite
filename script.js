@@ -4,9 +4,8 @@ var player;
 const createScene = function () {
     
     const scene = new BABYLON.Scene(engine);  
-
     
-    const ground = BABYLON.MeshBuilder.CreateGround("ground", {width:10, height:10});
+    const ground = BABYLON.MeshBuilder.CreateGround("ground", {width:1000, height:1000});
     const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
 
     // This creates and initially positions a follow camera 	
@@ -33,7 +32,7 @@ const createScene = function () {
         player.scaling.x=.5;
         player.scaling.y=.5;
         player.scaling.z=.5;
-        player.position.y=1;
+        player.position.y=5;
         camera.lockedTarget = player;
     });
 
@@ -42,11 +41,11 @@ const createScene = function () {
 
 const scene = createScene();
 
-for (var i=0;i<15;i++){
+for (var i=0;i<150;i++){
     var box = BABYLON.MeshBuilder.CreateBox("box", {})
-    box.position.y = 0.5;
-    box.position.x = Math.floor(Math.random()*10)-5;
-    box.position.z = Math.floor(Math.random()*10)-5; 
+    box.position.y = Math.floor(Math.random()*5);
+    box.position.x = Math.floor(Math.random()*100)-50;
+    box.position.z = Math.floor(Math.random()*100)-50; 
 }
 
 
@@ -56,7 +55,6 @@ for (var i=0;i<15;i++){
 
 
 engine.runRenderLoop(function (){
-    
     scene.render();
 });
 
@@ -72,10 +70,10 @@ function handleKeyDown(event){
         player.position.z++;
     }
     if (event.key=='a'){
-        player.rotation.y--;
+        player.position.x++;
     }
     if (event.key=='d'){
-        player.rotation.y++;
+        player.position.x--;
     }
 }
 
