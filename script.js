@@ -1,6 +1,7 @@
 const canvas = document.getElementById("babylonCanvas");
 const engine = new BABYLON.Engine(canvas,true);
 var player;
+var camera;
 const createScene = function () {
     
     const scene = new BABYLON.Scene(engine);  
@@ -9,7 +10,7 @@ const createScene = function () {
     const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
 
     // This creates and initially positions a follow camera 	
-    var camera = new BABYLON.FollowCamera("FollowCam", new BABYLON.Vector3(0, 10, -10), scene);
+    camera = new BABYLON.FollowCamera("FollowCam", new BABYLON.Vector3(0, 10, -10), scene);
 	
 	//The goal distance of camera from target
 	camera.radius = 30;
@@ -34,8 +35,11 @@ const createScene = function () {
         player.scaling.z=.5;
         player.position.y=5;
         camera.lockedTarget = player;
+        scene.doBeforeRender=function(){
+            camera.rotationOffset=player.rotation.y/Math.PI*180;
+        }
     });
-
+    
     return scene;
 };
 
@@ -55,6 +59,7 @@ for (var i=0;i<150;i++){
 
 
 engine.runRenderLoop(function (){
+    scene.doBeforeRender();
     scene.render();
 });
 
@@ -64,7 +69,8 @@ window.addEventListener("resize",function(){
 
 function handleKeyDown(event){
     if (event.key=='w'){
-        player.position.z--;
+        camera.rotationOffset=player.rotation.y/Math.PI*180;
+        player.rotation.y+=1;
     }
     if (event.key=='s'){
         player.position.z++;
