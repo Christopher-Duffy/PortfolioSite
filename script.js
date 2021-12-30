@@ -45,67 +45,43 @@ const createScene = function () {
 // Targets the camera to a particular position. In this case the scene origin
     camera.setTarget(BABYLON.Vector3.Zero());
 
-    
-    player = BABYLON.MeshBuilder.CreateSphere("player", {})
-    player.position.y=20;
-    player.imposter = new BABYLON.PhysicsImpostor(player, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 10, restitution: 0.9 }, scene);
-    shadowGenerator.addShadowCaster(player);
-    var myMaterial = new BABYLON.StandardMaterial("playerMaterial", scene);
+    BABYLON.SceneLoader.ImportMesh("", "meshes/", "car.babylon", scene, function (meshes) {
+        player = meshes[0];
+        player.position.y=20;
+        player.position.z=50;
+        player.imposter = new BABYLON.PhysicsImpostor(player, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 1, restitution: 0.9 }, scene);
+        player.imposter.friction=0.1;
+        shadowGenerator.addShadowCaster(player);
+        var myMaterial = new BABYLON.StandardMaterial("playerMaterial", scene);
 
-    myMaterial.diffuseColor = new BABYLON.Color3(0, 1, 0);
-    myMaterial.specularColor = new BABYLON.Color3(0, 0.2, 0.2);
-    myMaterial.ambientColor = new BABYLON.Color3(0,0,1);
+        myMaterial.diffuseColor = new BABYLON.Color3(0, 1, 0);
+        myMaterial.specularColor = new BABYLON.Color3(0, 0.2, 0.2);
+        myMaterial.ambientColor = new BABYLON.Color3(0,0,1);
 
-    player.material = myMaterial;
+        player.material = myMaterial;
 
-    camera.lockedTarget = player;
-    
-     scene.registerBeforeRender(function(){
-         camera.position.x=player.position.x+5;
-         camera.position.y=player.position.y+50;
-         camera.position.z=player.position.z-50;
+        camera.lockedTarget = player;
+        
+        scene.registerBeforeRender(function(){
+            camera.position.x=player.position.x+5;
+            camera.position.y=player.position.y+50;
+            camera.position.z=player.position.z-50;
 
+        });
     });
-
     return scene;
 };
 const scene = createScene();
 
 
 
-for (var i=0;i<100;i++){
-    BABYLON.SceneLoader.ImportMesh("", "./", "tree.babylon", scene, function (meshes) {
-    var box = meshes[0]
-    box.position.y = 2;
-    box.position.x = Math.random()*100-50;
-    box.position.z = Math.random()*100-50;
-    new BABYLON.PhysicsImpostor(box, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.9 }, scene);
-    });
 
-}
-
-BABYLON.SceneLoader.ImportMesh("", "./", "kicker.babylon", scene, function (meshes) {
-    var kicker = meshes[0]
-    kicker.scaling.x = 5;
-    kicker.scaling.y = 5;
-    kicker.scaling.z = 5;
-    kicker.position.y = 5;
-    kicker.position.x = -10;
-    kicker.position.z = -10;
-    new BABYLON.PhysicsImpostor(kicker, BABYLON.PhysicsImpostor.MeshImpostor, { mass: 0, restitution: 0 }, scene);
-    });
-
-    BABYLON.SceneLoader.ImportMesh("", "./", "portal.babylon", scene, function (meshes) {
-        var kicker = meshes[0]
-        kicker.scaling.x = 5;
-        kicker.scaling.y = 5;
-        kicker.scaling.z = 5;
-        kicker.position.y = 4;
-        kicker.position.x = 100;
-        kicker.position.z = 100;
-        new BABYLON.PhysicsImpostor(kicker, BABYLON.PhysicsImpostor.MeshImpostor, { mass: 0, restitution: 0 }, scene);
+        BABYLON.SceneLoader.ImportMesh("", "./", "SceneMain.babylon", scene, function (meshes) {
+            for(var i =0;i<meshes.length;i++){
+                new BABYLON.PhysicsImpostor(meshes[i], BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.9 }, scene);
+            }
         });
-
+        
 
 
 engine.runRenderLoop(function (){
@@ -118,6 +94,7 @@ window.addEventListener("resize",function(){
 
 function handleKeyDown(event){
     if (event.key=='w'){
+        player.imposter.rotation.y=0;
         player.imposter.setLinearVelocity(new BABYLON.Vector3(0,0,20));
     }
     if (event.key=='s'){
@@ -133,10 +110,8 @@ function handleKeyDown(event){
 function handleMouse(event){
 var xPercent = (event.clientX/document.body.clientWidth*200)-100;
 var zPercent = (event.clientY/document.body.clientHeight*200)-100;
-console.log("click is x: "+xPercent +"% and y: "+zPercent+"%.");
-player.imposter.setLinearVelocity(new BABYLON.Vector3(xPercent/10,0,-zPercent/10));
+player.imposter.setLinearVelocity(new BABYLON.Vector3(xPercent/3,0,-zPercent/3));
 }
 
 document.addEventListener('click' , handleMouse);
-document.addEventListener('mousemove' , handleMouse);
 document.addEventListener('keydown',handleKeyDown);
